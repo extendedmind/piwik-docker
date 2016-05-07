@@ -5,6 +5,9 @@
 
 FROM php:5.6-fpm
 
+# From http://stackoverflow.com/a/36908278/2659424
+RUN usermod -u 1000 www-data
+
 MAINTAINER timo.tiuraniemi@iki.fi
 
 RUN apt-get update && apt-get install -y \
@@ -17,7 +20,6 @@ RUN apt-get update && apt-get install -y \
 
 RUN docker-php-ext-configure gd --with-freetype-dir=/usr --with-png-dir=/usr --with-jpeg-dir=/usr \
  && docker-php-ext-install gd mbstring mysqli pdo_mysql zip
-
 
 RUN pecl install APCu geoip
 
@@ -42,12 +44,9 @@ RUN curl -fsSL -o /usr/src/piwik/misc/GeoIPCity.dat.gz http://geolite.maxmind.co
 
 COPY docker-entrypoint.sh /entrypoint.sh
 
-RUN cp -R /usr/src/piwik/* /var/www/html
-RUN chown -R www-data /var/www/html
-
-# WORKDIR is /var/www/html (inherited via "FROM php")
+WORKDIR /var/www/piwik
 # "/entrypoint.sh" will copy configuration on startup from /etc/piwik to the right location
-VOLUME /var/www/html
+VOLUME /var/www/piwik
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["php-fpm"]
