@@ -42,6 +42,9 @@ COPY php.ini /usr/local/etc/php/php.ini
 RUN curl -fsSL -o /usr/src/piwik/misc/GeoIPCity.dat.gz http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz \
      && gunzip /usr/src/piwik/misc/GeoIPCity.dat.gz
 
+RUN curl -fsSL -o /usr/src/piwik/plugins/CustomDimensions.zip https://plugins.piwik.org/api/2.0/plugins/CustomDimensions/download/0.1.4 \
+     && unzip /usr/src/piwik/plugins/CustomDimensions.zip -d /usr/src/piwik/plugins/ && rm /usr/src/piwik/plugins/CustomDimensions.zip
+
 COPY docker-entrypoint.sh /entrypoint.sh
 
 WORKDIR /var/www/piwik
